@@ -13,7 +13,8 @@ class ExcelUtil:
         return self.__data
 
     def limit_data(self, data: DataFrame) -> DataFrame:
-        return data[30:]
+        # return data[30:]
+        return data
 
     def get_clean_data(self, data: DataFrame) -> DataFrame:
         return data.drop(columns=[
@@ -30,7 +31,7 @@ class ExcelUtil:
             'Category 1',
             'Category 2',
             'Category 3',
-            'Category 4'
+            'Category 4',
         ])
 
     def get_static_data(self) -> dict:
@@ -47,3 +48,6 @@ class ExcelUtil:
 
     def get_data_by_cause_code(self, cause_code: str) -> dict:
         return self.get_static_data().get(cause_code)
+
+    def get_key_value_clean_data(self) -> list[dict]:
+        return [{row['Cause Code Alteração']: row['Atividades']} for index, row in self.get_clean_data(self.__data).iterrows()]

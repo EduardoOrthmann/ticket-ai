@@ -1,7 +1,4 @@
 from openai import AzureOpenAI
-from pandas import DataFrame
-
-from utils.excel_util import ExcelUtil
 
 
 class OpenAIClient:
@@ -9,7 +6,7 @@ class OpenAIClient:
         self.client = AzureOpenAI(api_key=openai_api_key, api_version=openai_api_version, azure_endpoint=azure_endpoint)
         self.model = openai_model
 
-    def interpret_email(self, ai_action: str, subject: str, body: str, context: DataFrame | str) -> str:
+    def interpret_email(self, ai_action: str, subject: str, body: str, context: str) -> str:
         response = self.client.chat.completions.create(
             model=self.model,
             messages=[

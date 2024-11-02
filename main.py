@@ -27,7 +27,10 @@ def main() -> None:
         for email in new_emails:
             ticket_data = ticket_manager.get_data_from_email(email['subject'], email['body'])
 
-            print(f"Generated Ticket: {ticket_data}")
+            print("Generated Ticket: {")
+            for key, value in ticket_data.items():
+                print(f"\t{key}: {value}")
+            print("}\n")
 
         time.sleep(10)
 
