@@ -4,17 +4,13 @@ from pandas import DataFrame
 
 class ExcelUtil:
     def __init__(self, file_path: str) -> None:
-        self.__data = self.limit_data(self._load_file(file_path))
+        self.__data = self._load_file(file_path)
 
     def _load_file(self, file_path: str) -> DataFrame:
         return pd.read_excel(file_path)
 
     def get_data(self) -> DataFrame:
         return self.__data
-
-    def limit_data(self, data: DataFrame) -> DataFrame:
-        # return data[30:]
-        return data
 
     def get_clean_data(self, data: DataFrame) -> DataFrame:
         return data.drop(columns=[
