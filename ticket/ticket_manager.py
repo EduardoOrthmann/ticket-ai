@@ -1,3 +1,4 @@
+import json
 from typing import Any
 
 from ai.open_ai_client import OpenAIClient
@@ -14,37 +15,53 @@ class TicketManager:
         email_data = {}
         cause_code = ""
         valid_cause_code = False
+        context = str(self.excel_util.get_key_value_clean_data())
 
         while not valid_cause_code and attempt < 3:
-            email_data_str = self.openai_client.interpret_email(
-                f"""
-                The context is divided into two parts: 'Cause Code' is the key and 'Atividades' is the value.
-                Fill the cause_code based on the context provided in 'Atividades' field. 
-                Only select a cause_code that exists in the valid list provided.
-                {f"Previous cause_code '{cause_code}' was invalid. Please try to select another." if cause_code else ""}
-                Return only a JSON object with the extracted data:
-                
+            prompt = f"""
+                You are tasked with matching an email's content to a 'cause_code' based on contextual information in an Excel sheet.
+                Each 'cause_code' has a description of relevant activities in the 'Atividades' field. Match the cause_code to the email based on these descriptions.
+                Return ONLY a JSON object with this format:
                 {{
-                    "cause_code": "",
-                    "summarized_issue": "",
+                    "cause_code": "", 
+                    "summarized_issue": "", 
                     "raw_email": ""
                 }}
-                """,
-                subject,
-                body,
-                str(self.excel_util.get_key_value_clean_data())
-            )
+    
+                Example:
+                Context: [{{"E-COLLABORATION.NOTIFICATION.CREATE.CHANGE": "Incluir notificações, Remover notificações, Alterar e-mail de notificações"}}]
+                Email: "Please add the email below to receive notifications for CNPJ 76639285003516"
+                Expected Output:
+                {{
+                    "cause_code": "E-COLLABORATION.NOTIFICATION.CREATE.CHANGE",
+                    "summarized_issue": "Request to add an email to receive notifications",
+                    "raw_email": "Please add the email below to receive notifications for CNPJ 76639285003516"
+                }}
+    
+                {f"Previous cause_code '{cause_code}' was invalid. Please try another." if cause_code else ""}
+                Context: {context}
+                
+                Email:
+                Subject: {subject}
+                Body: {body}
+                """
 
-            print(f"Email data attempt {attempt + 1}: ", email_data_str, "\n")
-            email_data = eval(email_data_str)
+            email_data_str = self.openai_client.interpret_email(prompt)
 
-            if email_data.get("cause_code") and self.excel_util.get_data_by_cause_code(email_data.get("cause_code")):
-                valid_cause_code = True
-            else:
+            try:
+                email_data = json.loads(email_data_str)
+                if email_data.get("cause_code") and self.excel_util.get_data_by_cause_code(email_data.get("cause_code")):
+                    valid_cause_code = True
+                else:
+                    attempt += 1
+                    cause_code = email_data.get("cause_code", "")
+            except json.JSONDecodeError:
+                print("Invalid JSON format received from AI. Retrying...")
                 attempt += 1
 
         if not valid_cause_code:
-            print("Unable to find a valid cause code after multiple attempts.")
+            print("Failed to get valid 'cause_code' after 3 attempts. Returning default values.")
+
             return {
                 "cause_code": "N/A",
                 "priority": "N/A",
