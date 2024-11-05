@@ -1,9 +1,9 @@
-from mail.email_client import EmailClient
+from mail.email_interface import EmailInterface
 from mail.email_parser import EmailParser
 
 
 class EmailMonitor:
-    def __init__(self, email_client: EmailClient, email_parser: EmailParser) -> None:
+    def __init__(self, email_client: EmailInterface, email_parser: EmailParser) -> None:
         self.email_client = email_client
         self.email_parser = email_parser
 

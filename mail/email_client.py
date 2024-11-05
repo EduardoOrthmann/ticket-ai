@@ -3,7 +3,10 @@ from email.message import Message
 from imaplib import IMAP4_SSL
 import email
 
-class EmailClient:
+from mail.email_interface import EmailInterface
+
+
+class EmailClient(EmailInterface):
     def __init__(self, server: str, email_account: str, email_password: str, folder: str = "inbox") -> None:
         self.server = server
         self.email_account = email_account
