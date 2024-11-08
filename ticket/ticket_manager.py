@@ -24,7 +24,8 @@ class TicketManager:
                 Return ONLY a JSON object with this format:
                 {{
                     "cause_code": "", 
-                    "summarized_issue": "", 
+                    "summarized_issue": "",
+                    "reason": "", # Explanation for the chosen cause_code
                     "raw_email": ""
                 }}
     
@@ -35,6 +36,7 @@ class TicketManager:
                 {{
                     "cause_code": "E-COLLABORATION.NOTIFICATION.CREATE.CHANGE",
                     "summarized_issue": "Request to add an email to receive notifications",
+                    "reason": "The request to add an email matches the 'Incluir notificações' activity.",
                     "raw_email": "Please add the email below to receive notifications for CNPJ 76639285003516"
                 }}
     
@@ -68,6 +70,7 @@ class TicketManager:
                 "brief_description": "N/A",
                 "assignment": "N/A",
                 "summarized_issue": "N/A",
+                "reason": "N/A",
                 "raw_email": body
             }
 
@@ -79,5 +82,6 @@ class TicketManager:
             "brief_description": filtered_data.get('Brief Description', 'N/A'),
             "assignment": filtered_data.get('Assignment', 'N/A'),
             "summarized_issue": email_data['summarized_issue'],
+            "reason": email_data['reason'],
             "raw_email": body
         }

@@ -21,9 +21,9 @@ class EmailClient(EmailInterface):
 
         return connection
 
-    def fetch_unread_emails(self) -> list[str]:
+    def fetch_emails(self) -> list[str]:
         self.connection.select(self.folder)
-        _, data = self.connection.search(None, 'UNSEEN')
+        _, data = self.connection.search(None, "ALL")
         mail_ids = data[0].split()
 
         return mail_ids

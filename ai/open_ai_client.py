@@ -27,12 +27,12 @@ class OpenAIClient:
             data = response.choices[0].message.content
             parsed_data = json.loads(data)
 
-            if "cause_code" in parsed_data and "summarized_issue" in parsed_data and "raw_email" in parsed_data:
+            if "cause_code" in parsed_data and "summarized_issue" in parsed_data and "reason" in parsed_data:
                 return data
 
             print("Received response in unexpected format:", data)
-            return '{"cause_code": "N/A", "summarized_issue": "N/A", "raw_email": ""}'
+            return '{"cause_code": "N/A", "summarized_issue": "N/A", "reason": "N/A", "raw_email": ""}'
 
         except Exception as e:
             print("Error occurred while calling the OpenAI API:", e)
-            return '{"cause_code": "N/A", "summarized_issue": "N/A", "raw_email": ""}'
+            return '{"cause_code": "N/A", "summarized_issue": "N/A", "reason": "N/A", "raw_email": ""}'

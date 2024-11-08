@@ -2,7 +2,7 @@ from email.message import Message
 
 
 class EmailInterface:
-    def fetch_unread_emails(self) -> list[str]:
+    def fetch_emails(self) -> list[str]:
         # Fetches unread emails from the email server
         pass
 

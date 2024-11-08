@@ -10,7 +10,7 @@ class EmailFileClient(EmailInterface):
     def __init__(self, directory_path: str) -> None:
         self.directory_path = directory_path
 
-    def fetch_unread_emails(self) -> list[str]:
+    def fetch_emails(self) -> list[str]:
         return [os.path.join(self.directory_path, file) for file in os.listdir(self.directory_path) if
                 file.endswith(".msg")]
 
