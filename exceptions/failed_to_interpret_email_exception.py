@@ -1,0 +1,2 @@
+class FailedToInterpretEmailException(Exception):
+    pass

@@ -3,11 +3,10 @@ from flask_cors import CORS
 from pydantic import ValidationError
 
 from mail.email_client import EmailClient
-from mail.email_file_client import EmailFileClient
 from mail.email_monitor import EmailMonitor
 from mail.email_parser import EmailParser
 from ai.open_ai_client import OpenAIClient
-from models import TicketRequest, TicketResponse
+from models import TicketRequest, TicketResponse, EmailStatus
 from ticket.ticket_manager import TicketManager
 from dotenv import load_dotenv
 import os
@@ -21,10 +20,9 @@ load_dotenv()
 ticket_database: list[TicketResponse] = []
 
 email_client = EmailClient(os.getenv("IMAP_SERVER"), os.getenv("EMAIL_ACCOUNT"), os.getenv("EMAIL_PASSWORD"))
-# email_client = EmailFileClient("C:\\Users\\Eduardo\\Downloads\\emails")
 email_parser = EmailParser()
 email_monitor = EmailMonitor(email_client, email_parser)
-excel_util = ExcelUtil("C:\\Users\\Eduardo\\Downloads\\L1-Email-to-SNOW\\Relação de Cause Code ECS-eEVN - Dicas e descrição - Dez_2019.xlsx")
+excel_util = ExcelUtil("C:\\Users\\Eduardo\\Downloads\\L1-Email-to-SNOW\\Relação de Cause Code ECS-eEVN - Dicas e descrição - Dez_2019 1 - Copy.xlsx")
 openai_client = OpenAIClient(os.getenv("OPENAI_API_KEY"), os.getenv("OPENAI_API_VERSION"), os.getenv("OPENAI_API_BASE"), os.getenv("OPENAI_GPT35TURBO_MODEL"))
 ticket_manager = TicketManager(openai_client, excel_util)
 
@@ -46,7 +44,7 @@ def generate_ticket():
 
         for email in email_monitor.emails:
             if email.subject == ticket_request.subject:
-                email.status = "processed"
+                email.status = EmailStatus.processed
                 break
 
         return jsonify(ticket_response.model_dump())

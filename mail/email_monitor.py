@@ -26,9 +26,9 @@ class EmailMonitor:
                         subject=parsed_email["subject"],
                         from_=parsed_email["from"],
                         body=parsed_email["body"],
-                        status="unprocessed"
+                        status=EmailStatus.unprocessed
                     )
-                    self.emails.append(email_response)  # Save fetched email
+                    self.emails.append(email_response)
                 except ValidationError as e:
                     print(f"Validation error for email: {mail_id}")
                     print(e.errors())
